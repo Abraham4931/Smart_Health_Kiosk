@@ -1,5 +1,6 @@
 const mqtt = require('mqtt');
 const { Measurement } = require('../models');
+const { touchKioskActivity } = require('./kioskHeartbeat');
 
 let client = null;
 let ioInstance = null;
@@ -61,6 +62,8 @@ function init(io) {
       });
 
       console.log(`MQTT: Ingested measurement ${measurement._id} from kiosk ${kioskId}`);
+
+      await touchKioskActivity(kioskId, measuredAt);
 
       if (ioInstance) {
         ioInstance.to(`patient:${patientId}`).emit('new_measurement', measurement);

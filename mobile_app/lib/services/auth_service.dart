@@ -1,14 +1,25 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart'
+    show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  // Port 5000 everywhere. Chrome: localhost. Phone: your PC's IP (same WiFi). Run "ipconfig" on PC for IPv4.
-  static const String _pcIp = '10.240.39.157';
-  static String get _baseUrl => kIsWeb
-      ? 'http://localhost:5000/api'
-      : 'http://$_pcIp:5000/api';
+  /// Override with: `flutter run --dart-define=API_HOST=192.168.1.10`
+  /// Android emulator default: 10.0.2.2 (host machine). iOS simulator / desktop: localhost.
+  static String get _nativeHost {
+    const fromEnv = String.fromEnvironment('API_HOST');
+    if (fromEnv.isNotEmpty) return fromEnv;
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return '10.0.2.2';
+      default:
+        return 'localhost';
+    }
+  }
+
+  static String get _baseUrl =>
+      kIsWeb ? 'http://localhost:5000/api' : 'http://$_nativeHost:5000/api';
   static String? _token;
   static Map<String, dynamic>? _patient;
 

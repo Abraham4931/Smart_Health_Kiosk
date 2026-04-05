@@ -5,7 +5,8 @@
  * Uses .env (LLM_API_KEY, LLM_PROVIDER, LLM_MODEL). Prints whether the
  * response came from the real LLM or the rule-based fallback.
  */
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const { analyzeVitals } = require('./src/services/llmService');
 
 const apiKey = process.env.LLM_API_KEY;

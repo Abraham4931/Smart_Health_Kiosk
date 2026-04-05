@@ -1,6 +1,7 @@
 const { Measurement, AIInsight, Patient } = require('../models');
 const { analyzeVitals } = require('../services/llmService');
 const { findNearbyHospitals } = require('../services/mapsService');
+const { touchKioskActivity } = require('../services/kioskHeartbeat');
 
 function normalizeVitals(vitals) {
   if (!vitals || typeof vitals !== 'object') return vitals;
@@ -22,6 +23,8 @@ exports.createMeasurement = async (req, res) => {
       measuredAt: measuredAt || new Date(),
       syncStatus: 'synced',
     });
+
+    await touchKioskActivity(kioskId, measurement.measuredAt);
 
     res.status(201).json({ measurement });
   } catch (err) {
