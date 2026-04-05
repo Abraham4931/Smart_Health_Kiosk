@@ -27,7 +27,7 @@ function formatRelative(msAgo, rtf) {
   return rtf.format(-day, 'day');
 }
 
-export default function KioskFleetHealthPulse() {
+export default function KioskHealthOverview() {
   const [kiosks, setKiosks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -121,7 +121,7 @@ export default function KioskFleetHealthPulse() {
   return (
     <section
       className="relative mb-8 rounded-2xl overflow-hidden border border-slate-200/80 bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 text-white shadow-xl shadow-indigo-950/20"
-      aria-labelledby="fleet-health-heading"
+      aria-labelledby="kiosk-health-overview-heading"
     >
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_20%_-20%,rgba(99,102,241,0.35),transparent)] pointer-events-none" />
       <div className="relative px-6 py-5 border-b border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -129,7 +129,7 @@ export default function KioskFleetHealthPulse() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-indigo-300/90 mb-1">
             Operations
           </p>
-          <h2 id="fleet-health-heading" className="text-xl font-bold tracking-tight">
+          <h2 id="kiosk-health-overview-heading" className="text-xl font-bold tracking-tight">
             Kiosk fleet health
           </h2>
           <p className="text-sm text-slate-400 mt-1 max-w-xl">

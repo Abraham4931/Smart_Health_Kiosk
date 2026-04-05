@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../api/client';
-import KioskFleetHealthPulse from '../components/KioskFleetHealthPulse';
+import KioskHealthOverview from '../components/KioskHealthOverview';
 
 function StatCard({ label, value, color }) {
   return (
@@ -21,7 +21,7 @@ export default function Dashboard() {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">System Overview</h2>
-      <KioskFleetHealthPulse />
+      <KioskHealthOverview />
       {!stats ? (
         <p className="text-gray-500 mb-6">Loading statistics…</p>
       ) : (
