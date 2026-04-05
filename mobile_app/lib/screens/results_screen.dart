@@ -64,14 +64,27 @@ class _ResultsScreenState extends State<ResultsScreen> {
           _vitalRow('Heart Rate', '${v['heartRate'] ?? '-'} bpm'),
           _vitalRow('SpO2', '${v['spo2'] ?? '-'}%'),
           _vitalRow('Temperature', '${v['temperatureCelsius'] ?? '-'}°C'),
-          _vitalRow('Weight', '${v['weightKg'] ?? '-'} kg'),
+          _vitalRow('Weight', (v['weightKg'] != null && v['weightKg'] != 0) ? '${v['weightKg']} kg' : '- kg'),
           _vitalRow('Height', '${v['heightCm'] ?? '-'} cm'),
           _vitalRow('BMI', '${v['bmi'] ?? '-'}'),
           const SizedBox(height: 24),
           if (_analyzing) const Center(child: Column(children: [CircularProgressIndicator(), SizedBox(height: 12), Text('Analyzing your vitals...')])),
-          if (_error != null) Card(color: Colors.red.shade50, child: Padding(padding: const EdgeInsets.all(16), child: Text(_error!, style: TextStyle(color: Colors.red.shade700)))),
+          if (_error != null) ...[
+            Card(color: Colors.red.shade50, child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(_error!, style: TextStyle(color: Colors.red.shade700)),
+                  const SizedBox(height: 12),
+                  TextButton.icon(onPressed: () { setState(() => _error = null); _analyze(); }, icon: const Icon(Icons.refresh), label: const Text('Retry analysis')),
+                ],
+              ),
+            )),
+          ],
           if (_insight != null) ...[
             Card(
+              elevation: 2,
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
@@ -79,15 +92,40 @@ class _ResultsScreenState extends State<ResultsScreen> {
                   children: [
                     Row(
                       children: [
-                        const Text('AI Health Insight', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        const Spacer(),
-                        Chip(label: Text(_insight!['riskLevel'] ?? 'low', style: TextStyle(color: _riskColor(_insight!['riskLevel']))), backgroundColor: _riskColor(_insight!['riskLevel']).withAlpha(25)),
+                        Icon(Icons.psychology, color: _insight!['isRuleBased'] == true ? Colors.grey : Colors.indigo, size: 28),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _insight!['isRuleBased'] == true ? 'Health summary (rule-based)' : 'AI Health Insight',
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Chip(
+                          label: Text((_insight!['riskLevel'] ?? 'low').toString().toUpperCase(), style: TextStyle(color: _riskColor(_insight!['riskLevel']), fontWeight: FontWeight.w600)),
+                          backgroundColor: _riskColor(_insight!['riskLevel']).withAlpha(40),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 12),
-                    Text(_insight!['summaryText'] ?? ''),
-                    const SizedBox(height: 12),
-                    if (_insight!['preventiveAdvice'] != null) Text('Advice: ${_insight!['preventiveAdvice']}', style: const TextStyle(fontStyle: FontStyle.italic)),
+                    Text(_insight!['summaryText'] ?? '', style: const TextStyle(fontSize: 15, height: 1.4)),
+                    if (_insight!['conditionCategory'] != null && (_insight!['conditionCategory'] as String).isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 6,
+                        children: [
+                          const Text('Category: ', style: TextStyle(color: Colors.grey)),
+                          Chip(
+                            label: Text(_insight!['conditionCategory'].toString(), style: const TextStyle(fontSize: 12)),
+                            padding: EdgeInsets.zero,
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                        ],
+                      ),
+                    ],
+                    if (_insight!['preventiveAdvice'] != null && (_insight!['preventiveAdvice'] as String).isNotEmpty) ...[
+                      const SizedBox(height: 12),
+                      Text('Advice: ${_insight!['preventiveAdvice']}', style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic, color: Colors.grey.shade700)),
+                    ],
                     const SizedBox(height: 12),
                     Container(
                       padding: const EdgeInsets.all(10),

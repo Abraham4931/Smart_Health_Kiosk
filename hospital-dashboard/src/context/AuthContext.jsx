@@ -12,13 +12,17 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem('hospital_token');
     if (!token) { setLoading(false); return; }
+    const timeout = setTimeout(() => setLoading(false), 10000);
     api.get('/auth/me')
       .then(({ data }) => {
         setUser(data.user);
         connectSocket(token);
       })
       .catch(() => localStorage.removeItem('hospital_token'))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        clearTimeout(timeout);
+        setLoading(false);
+      });
   }, []);
 
   function connectSocket(token) {

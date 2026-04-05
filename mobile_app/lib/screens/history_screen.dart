@@ -110,6 +110,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 _chip('HR', '${v['heartRate'] ?? '-'}'),
                 _chip('SpO2', '${v['spo2'] ?? '-'}%'),
                 _chip('Temp', '${v['temperatureCelsius'] ?? '-'}°C'),
+                _chip('Height', v['heightCm'] != null ? '${v['heightCm']} cm' : '-'),
+                _chip('Weight', (v['weightKg'] != null && v['weightKg'] != 0) ? '${v['weightKg']} kg' : '-'),
                 _chip('BMI', '${v['bmi'] ?? '-'}'),
               ],
             ),

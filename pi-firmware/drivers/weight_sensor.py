@@ -58,4 +58,7 @@ class WeightSensor:
 
         avg = sum(readings) / len(readings)
         weight_kg = round((avg - HX711_OFFSET) / HX711_SCALE_FACTOR, 1)
-        return {"weightKg": max(0, weight_kg)}
+        # Treat 0 or negative as no sensor / no reading (like other params)
+        if weight_kg <= 0:
+            return {"weightKg": None}
+        return {"weightKg": weight_kg}

@@ -1,5 +1,6 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import PageTransition from './PageTransition';
 
 const links = [
   { to: '/', label: 'Appointments' },
@@ -38,7 +39,7 @@ export default function Layout() {
         </div>
       </aside>
       <main className="flex-1 p-8 overflow-auto">
-        <Outlet />
+        <PageTransition />
       </main>
     </div>
   );

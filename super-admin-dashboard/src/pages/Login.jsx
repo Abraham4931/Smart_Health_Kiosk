@@ -18,7 +18,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900">
+    <div className="page-transition-enter min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900">
       <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm">
         <h1 className="text-2xl font-bold text-center mb-2">Super Admin</h1>
         <p className="text-gray-500 text-center text-sm mb-6">Smart Health Kiosk System</p>

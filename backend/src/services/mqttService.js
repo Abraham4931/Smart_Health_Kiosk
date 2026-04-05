@@ -6,6 +6,10 @@ let ioInstance = null;
 
 function init(io) {
   ioInstance = io;
+  if (process.env.MQTT_DISABLED === '1') {
+    console.log('MQTT: disabled (MQTT_DISABLED=1)');
+    return;
+  }
   const brokerUrl = process.env.MQTT_BROKER_URL;
   const username = process.env.MQTT_USERNAME;
   const password = process.env.MQTT_PASSWORD;

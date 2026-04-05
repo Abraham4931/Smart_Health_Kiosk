@@ -23,6 +23,7 @@ const aiInsightSchema = new mongoose.Schema({
     type: String,
     default: 'This is a preliminary AI-generated insight and does NOT constitute a clinical diagnosis. Please consult a healthcare professional.',
   },
+  isRuleBased: { type: Boolean, default: false },
 }, { timestamps: true });
 
 module.exports = mongoose.model('AIInsight', aiInsightSchema);

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Standalone test for HC-SR04 ultrasonic (same logic as your working script).
-Uses config pins. Run from pi-firmware with venv active: python test_ultrasonic.py
-Press Ctrl+C to stop.
+Uses config pins. Run ON THE RASPBERRY PI (not on PC): python test_ultrasonic.py
+Press Ctrl+C to stop. See ULTRASONIC_HEIGHT.md for wiring (TRIG=BCM 23, ECHO=BCM 24).
 """
 import os
 import sys
@@ -11,10 +11,21 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 try:
     import RPi.GPIO as GPIO
-    from config import HC_SR04_TRIG_PIN as TRIG, HC_SR04_ECHO_PIN as ECHO
-except ImportError as e:
-    print("Error:", e)
-    sys.exit(1)
+    _gpio_backend = "RPi.GPIO (Pi 4 or older)"
+except ImportError:
+    try:
+        import RPi_LGPIO as GPIO  # Pi 5
+        _gpio_backend = "RPi_LGPIO (Pi 5)"
+    except ImportError:
+        print("Error: No GPIO module. Run this ON THE RASPBERRY PI.")
+        print("  Pi 5 (apt): sudo apt install python3-rpi-lgpio  then run WITHOUT venv:")
+        print("    deactivate && python3 test_ultrasonic.py")
+        print("  Pi 5 (pip): pip install rpi-lgpio  (needs internet)")
+        print("  Pi 4 or older: sudo apt install python3-rpi.gpio")
+        sys.exit(1)
+print("Using", _gpio_backend)
+
+from config import HC_SR04_TRIG_PIN as TRIG, HC_SR04_ECHO_PIN as ECHO
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(TRIG, GPIO.OUT)

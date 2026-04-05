@@ -1,6 +1,7 @@
 flask==3.1.0
 flask-cors==5.0.1
-# Use rpi-lgpio on Pi 5 (RPi.GPIO fails with "Cannot determine SOC peripheral base address")
-# Do not install both RPi.GPIO and rpi-lgpio in the same venv
-rpi-lgpio>=0.4.0
+markupsafe>=2.1.0
+# GPIO: on Pi 4 or older use RPi.GPIO (often: sudo apt install python3-rpi.gpio).
+# Uncomment below only for Pi 5 when you have internet (pip has no wheel for some Pi setups).
+# rpi-lgpio>=0.4.0
 smbus2==0.5.0

@@ -1,12 +1,14 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  // On phone: use your Linux PC's IP so the app can reach the backend (same WiFi).
-  // Find PC IP: hostname -I | awk '{print $1}' (e.g. 192.168.1.105). USB tethering: 192.168.137.1
-  // Chrome/web: use http://localhost:5000/api
-  static const String _baseUrl = 'http://192.168.1.100:5000/api';
+  // Port 5000 everywhere. Chrome: localhost. Phone: your PC's IP (same WiFi). Run "ipconfig" on PC for IPv4.
+  static const String _pcIp = '10.240.39.157';
+  static String get _baseUrl => kIsWeb
+      ? 'http://localhost:5000/api'
+      : 'http://$_pcIp:5000/api';
   static String? _token;
   static Map<String, dynamic>? _patient;
 
@@ -21,6 +23,8 @@ class AuthService {
 
   static Map<String, dynamic>? get patient => _patient;
   static String get baseUrl => _baseUrl;
+  /// Base URL for uploads (e.g. hospital photos): same host as API but without /api
+  static String get uploadsBase => _baseUrl.replaceFirst(RegExp(r'/api/?$'), '');
 
   static Map<String, String> get headers => {
     'Content-Type': 'application/json',

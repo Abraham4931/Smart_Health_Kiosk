@@ -47,6 +47,7 @@ class ApiService {
     required double latitude,
     required double longitude,
   }) async {
+    await AuthService.getToken(); // ensure token loaded so headers include Bearer
     final res = await http.post(
       Uri.parse('$_base/measurements/analyze'),
       headers: AuthService.headers,
@@ -56,6 +57,9 @@ class ApiService {
         'longitude': longitude,
       }),
     );
+    if (res.statusCode != 200) {
+      throw Exception('Analysis failed: ${res.statusCode} ${res.body}');
+    }
     return jsonDecode(res.body);
   }
 

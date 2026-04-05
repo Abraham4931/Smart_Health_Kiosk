@@ -1,0 +1,22 @@
+# Secrets — never commit real credentials
+backend/.env
+super-admin-dashboard/.env
+hospital-dashboard/.env
+**/.env
+!.env.example
+!**/.env.example
+
+# Dependencies
+backend/node_modules/
+
+# Runtime uploads (user / patient content)
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Build output
+**/dist/
+
+# Logs & OS
+*.log
+.DS_Store
+Thumbs.db

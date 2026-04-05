@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../api/client';
+import KioskFleetHealthPulse from '../components/KioskFleetHealthPulse';
 
 function StatCard({ label, value, color }) {
   return (
@@ -17,19 +18,22 @@ export default function Dashboard() {
     api.get('/admin/stats').then(({ data }) => setStats(data.stats));
   }, []);
 
-  if (!stats) return <p className="text-gray-500">Loading...</p>;
-
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">System Overview</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <StatCard label="Total Patients" value={stats.totalPatients} color="border-l-4 border-l-blue-500" />
-        <StatCard label="Active Subscriptions" value={stats.activeSubscriptions} color="border-l-4 border-l-green-500" />
-        <StatCard label="Total Kiosks" value={stats.totalKiosks} color="border-l-4 border-l-purple-500" />
-        <StatCard label="Online Kiosks" value={stats.onlineKiosks} color="border-l-4 border-l-emerald-500" />
-        <StatCard label="Total Measurements" value={stats.totalMeasurements} color="border-l-4 border-l-orange-500" />
-        <StatCard label="Registered Hospitals" value={stats.totalHospitals} color="border-l-4 border-l-pink-500" />
-      </div>
+      <KioskFleetHealthPulse />
+      {!stats ? (
+        <p className="text-gray-500 mb-6">Loading statistics…</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <StatCard label="Total Patients" value={stats.totalPatients} color="border-l-4 border-l-blue-500" />
+          <StatCard label="Active Subscriptions" value={stats.activeSubscriptions} color="border-l-4 border-l-green-500" />
+          <StatCard label="Total Kiosks" value={stats.totalKiosks} color="border-l-4 border-l-purple-500" />
+          <StatCard label="Online Kiosks" value={stats.onlineKiosks} color="border-l-4 border-l-emerald-500" />
+          <StatCard label="Total Measurements" value={stats.totalMeasurements} color="border-l-4 border-l-orange-500" />
+          <StatCard label="Registered Hospitals" value={stats.totalHospitals} color="border-l-4 border-l-pink-500" />
+        </div>
+      )}
     </div>
   );
 }

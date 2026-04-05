@@ -1,0 +1,17 @@
+{
+  "name": "smart-health-kiosk",
+  "private": true,
+  "description": "Monorepo root — run npm install here, then npm run dev (starts API + both UIs).",
+  "scripts": {
+    "install:all": "npm install --prefix ./backend && npm install --prefix ./hospital-dashboard && npm install --prefix ./super-admin-dashboard",
+    "setup": "npm install && npm run install:all",
+    "start:backend": "npm run start --prefix ./backend",
+    "dev:hospital": "npm run dev --prefix ./hospital-dashboard",
+    "dev:admin": "npm run dev --prefix ./super-admin-dashboard",
+    "seed": "npm run seed --prefix ./backend",
+    "dev": "concurrently -k -n backend,hospital,admin -c blue,green,magenta \"npm run start:backend\" \"npm run dev:hospital\" \"npm run dev:admin\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

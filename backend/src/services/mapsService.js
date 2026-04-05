@@ -63,6 +63,7 @@ async function findRegisteredHospitals(lat, lng, conditionCategory, radiusMeters
     specializations: h.specializations,
     bookingFee: h.bookingFee,
     location: h.location,
+    imageUrl: h.imageUrl || null,
     distance: calculateDistance(lat, lng, h.location.coordinates[1], h.location.coordinates[0]),
   }));
 }

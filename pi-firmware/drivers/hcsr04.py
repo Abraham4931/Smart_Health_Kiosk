@@ -10,7 +10,11 @@ try:
     import RPi.GPIO as GPIO
     _HAS_GPIO = True
 except ImportError:
-    _HAS_GPIO = False
+    try:
+        import RPi_LGPIO as GPIO  # Pi 5
+        _HAS_GPIO = True
+    except ImportError:
+        _HAS_GPIO = False
 
 from config import HC_SR04_TRIG_PIN, HC_SR04_ECHO_PIN, HEIGHT_SENSOR_MOUNT_CM
 

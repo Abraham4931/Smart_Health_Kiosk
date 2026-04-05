@@ -3,8 +3,16 @@ const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 const { UserAccount, Hospital, Kiosk } = require('./models');
 
-async function seed() {
-  await connectDB();
+/**
+ * @param {{ disconnect?: boolean, connect?: boolean }} opts
+ * - connect: set false when mongoose is already connected (e.g. server startup).
+ * - disconnect: set false when the process should keep the DB open (server).
+ */
+async function runSeed(opts = {}) {
+  const { disconnect = true, connect = true } = opts;
+  if (connect) {
+    await connectDB();
+  }
 
   const adminExists = await UserAccount.findOne({ username: 'admin' });
   if (!adminExists) {
@@ -62,7 +70,13 @@ async function seed() {
   }
 
   console.log('Seed complete');
-  await mongoose.disconnect();
+  if (disconnect) {
+    await mongoose.disconnect();
+  }
 }
 
-seed().catch(console.error);
+module.exports = { runSeed };
+
+if (require.main === module) {
+  runSeed().catch(console.error);
+}

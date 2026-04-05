@@ -2,15 +2,30 @@ const { Hospital, Kiosk, UserAccount, Patient, Subscription, Measurement } = req
 
 exports.createHospital = async (req, res) => {
   try {
-    const { name, latitude, longitude, address, phone, specializations, bookingFee, googlePlaceId } = req.body;
+    const body = req.body || {};
+    const name = body.name;
+    const latitude = body.latitude != null ? Number(body.latitude) : NaN;
+    const longitude = body.longitude != null ? Number(body.longitude) : NaN;
+    if (!name || String(name).trim() === '') {
+      return res.status(400).json({ error: 'Hospital name is required' });
+    }
+    if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
+      return res.status(400).json({ error: 'Please set the hospital location on the map (click the map)' });
+    }
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    const specializations = body.specializations;
+    const specs = Array.isArray(specializations)
+      ? specializations
+      : (typeof specializations === 'string' ? specializations.split(',').map((s) => s.trim()).filter(Boolean) : []);
     const hospital = await Hospital.create({
-      name,
+      name: String(name).trim(),
       location: { type: 'Point', coordinates: [longitude, latitude] },
-      address: address || '',
-      phone: phone || '',
-      specializations: specializations || [],
-      bookingFee: bookingFee || 0,
-      googlePlaceId: googlePlaceId || null,
+      address: body.address || '',
+      phone: body.phone || '',
+      specializations: specs,
+      bookingFee: Number(body.bookingFee) || 0,
+      googlePlaceId: body.googlePlaceId || null,
+      imageUrl,
     });
     res.status(201).json({ hospital });
   } catch (err) {
@@ -22,10 +37,17 @@ exports.updateHospital = async (req, res) => {
   try {
     const { id } = req.params;
     const updates = { ...req.body };
+    if (req.file) updates.imageUrl = `/uploads/${req.file.filename}`;
+    if (updates.specializations != null) {
+      updates.specializations = typeof updates.specializations === 'string'
+        ? updates.specializations.split(',').map((s) => s.trim()).filter(Boolean)
+        : updates.specializations;
+    }
+    if (updates.bookingFee != null) updates.bookingFee = Number(updates.bookingFee);
     if (updates.latitude != null && updates.longitude != null) {
       updates.location = {
         type: 'Point',
-        coordinates: [updates.longitude, updates.latitude],
+        coordinates: [Number(updates.longitude), Number(updates.latitude)],
       };
       delete updates.latitude;
       delete updates.longitude;

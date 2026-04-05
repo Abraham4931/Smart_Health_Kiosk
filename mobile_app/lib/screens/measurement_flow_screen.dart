@@ -22,7 +22,7 @@ bool _isSensorResultValid(String sensorId, Map<String, dynamic>? data) {
     case 'height':
       return data['heightCm'] != null;
     case 'weight':
-      return data['weightKg'] != null;
+      return data['weightKg'] != null && data['weightKg'] != 0;
     case 'spo2_hr':
       return (data['heartRate'] != null || data['spo2'] != null);
     case 'temperature':
@@ -39,7 +39,8 @@ void _mergeVitals(Map<String, dynamic> vitals, String sensorId, Map<String, dyna
   } else if (sensorId == 'height') {
     vitals['heightCm'] = data['heightCm'];
   } else if (sensorId == 'weight') {
-    vitals['weightKg'] = data['weightKg'];
+    final w = data['weightKg'];
+    vitals['weightKg'] = (w != null && w != 0) ? w : null;
   } else if (sensorId == 'spo2_hr') {
     vitals['heartRate'] = data['heartRate'];
     vitals['spo2'] = data['spo2'];
@@ -389,7 +390,7 @@ class _MeasurementFlowScreenState extends State<MeasurementFlowScreen> {
               ? '${v['systolicBP']}/${v['diastolicBP']} mmHg'
               : _skipped.contains('bp') ? 'Skipped' : '—'),
           _summaryRow('Height', v['heightCm'] != null ? '${v['heightCm']} cm' : _skipped.contains('height') ? 'Skipped' : '—'),
-          _summaryRow('Weight', v['weightKg'] != null ? '${v['weightKg']} kg' : _skipped.contains('weight') ? 'Skipped' : '—'),
+          _summaryRow('Weight', (v['weightKg'] != null && v['weightKg'] != 0) ? '${v['weightKg']} kg' : _skipped.contains('weight') ? 'Skipped' : '—'),
           _summaryRow('Heart Rate', v['heartRate'] != null ? '${v['heartRate']} bpm' : _skipped.contains('spo2_hr') ? 'Skipped' : '—'),
           _summaryRow('SpO2', v['spo2'] != null ? '${v['spo2']}%' : _skipped.contains('spo2_hr') ? 'Skipped' : '—'),
           _summaryRow('Temperature', v['temperatureCelsius'] != null ? '${v['temperatureCelsius']}°C' : _skipped.contains('temperature') ? 'Skipped' : '—'),

@@ -1,1 +1,25 @@
 @import "tailwindcss";
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-transition-enter {
+  animation: page-enter 0.38s ease-out both;
+}
+@import "leaflet/dist/leaflet.css";
+
+/* Ensure Leaflet map container has size when used in the Hospitals form */
+.leaflet-container {
+  height: 100%;
+  min-height: 300px;
+  width: 100%;
+  z-index: 0;
+}

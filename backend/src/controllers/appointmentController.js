@@ -41,7 +41,7 @@ exports.createAppointment = async (req, res) => {
 exports.getMyAppointments = async (req, res) => {
   try {
     const appointments = await Appointment.find({ patientId: req.user.id })
-      .populate('hospitalId', 'name address specializations')
+      .populate('hospitalId', 'name address specializations imageUrl')
       .sort({ createdAt: -1 });
     res.json({ appointments });
   } catch (err) {

@@ -2,6 +2,14 @@ const { Measurement, AIInsight, Patient } = require('../models');
 const { analyzeVitals } = require('../services/llmService');
 const { findNearbyHospitals } = require('../services/mapsService');
 
+function normalizeVitals(vitals) {
+  if (!vitals || typeof vitals !== 'object') return vitals;
+  const out = { ...vitals };
+  // Treat weight 0 as no sensor (store null like other missing params)
+  if (out.weightKg === 0) out.weightKg = null;
+  return out;
+}
+
 exports.createMeasurement = async (req, res) => {
   try {
     const patientId = req.user.id;
@@ -10,7 +18,7 @@ exports.createMeasurement = async (req, res) => {
     const measurement = await Measurement.create({
       patientId,
       kioskId,
-      vitals,
+      vitals: normalizeVitals(vitals),
       measuredAt: measuredAt || new Date(),
       syncStatus: 'synced',
     });
@@ -45,6 +53,7 @@ exports.analyzeAndSuggest = async (req, res) => {
       riskLevel: llmResult.riskLevel,
       conditionCategory: llmResult.conditionCategory,
       preventiveAdvice: llmResult.preventiveAdvice,
+      isRuleBased: llmResult.isRuleBased === true,
     });
 
     const lat = latitude || 0;

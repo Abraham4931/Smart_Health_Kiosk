@@ -30,8 +30,18 @@ app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
 
 const PORT = process.env.PORT || 5000;
 
+async function maybeAutoSeed() {
+  if (process.env.SKIP_AUTO_SEED === '1') return;
+  const { UserAccount } = require('./models');
+  if ((await UserAccount.countDocuments()) > 0) return;
+  const { runSeed } = require('./seed');
+  console.log('Database empty — applying initial seed (admin / doctor1)…');
+  await runSeed({ connect: false, disconnect: false });
+}
+
 async function start() {
   await connectDB();
+  await maybeAutoSeed();
 
   const io = socketService.init(server);
   mqttService.init(io);
@@ -41,4 +51,7 @@ async function start() {
   });
 }
 
-start().catch(console.error);
+start().catch((err) => {
+  console.error('Server failed to start:', err.message || err);
+  process.exit(1);
+});

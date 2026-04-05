@@ -21,6 +21,7 @@
     "mongoose": "^9.2.1",
     "mqtt": "^5.15.0",
     "multer": "^2.0.2",
+    "mongodb-memory-server": "^11.0.1",
     "socket.io": "^4.8.3",
     "uuid": "^13.0.0",
     "ws": "^8.19.0"

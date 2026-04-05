@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
+import '../services/auth_service.dart';
 
 class AppointmentsScreen extends StatefulWidget {
   const AppointmentsScreen({super.key});
@@ -51,6 +52,10 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                     final a = _appointments[index];
                     final hospital = a['hospitalId'];
                     final date = DateTime.tryParse(a['createdAt'] ?? '') ?? DateTime.now();
+                    final imageUrl = hospital?['imageUrl'] as String?;
+                    final photoUrl = imageUrl != null && imageUrl.isNotEmpty
+                        ? '${AuthService.uploadsBase}$imageUrl'
+                        : null;
                     return Card(
                       margin: const EdgeInsets.only(bottom: 12),
                       child: Padding(
@@ -61,6 +66,12 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                if (photoUrl != null)
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.network(photoUrl, width: 48, height: 48, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const SizedBox.shrink()),
+                                  ),
+                                if (photoUrl != null) const SizedBox(width: 12),
                                 Expanded(child: Text(hospital?['name'] ?? 'Hospital', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
                                 Chip(
                                   label: Text(a['status'] ?? 'pending', style: TextStyle(color: _statusColor(a['status'] ?? 'pending'), fontSize: 12)),

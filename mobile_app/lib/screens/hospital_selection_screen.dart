@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import '../services/api_service.dart';
+import '../services/auth_service.dart';
 
 class HospitalSelectionScreen extends StatefulWidget {
   final Map<String, dynamic> hospitals;
@@ -135,14 +136,20 @@ class _HospitalSelectionScreenState extends State<HospitalSelectionScreen> {
 
   Widget _hospitalCard(Map<String, dynamic> h, {required bool registered}) {
     final isSelected = _selected == h;
+    final imageUrl = h['imageUrl'] as String?;
+    final photoUrl = imageUrl != null && imageUrl.isNotEmpty
+        ? '${AuthService.uploadsBase}$imageUrl'
+        : null;
     return Card(
       color: isSelected ? Theme.of(context).colorScheme.primaryContainer : null,
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        leading: CircleAvatar(
-          backgroundColor: registered ? Colors.indigo.shade50 : Colors.grey.shade100,
-          child: Icon(Icons.local_hospital, color: registered ? Colors.indigo : Colors.grey),
-        ),
+        leading: photoUrl != null
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(photoUrl, width: 56, height: 56, fit: BoxFit.cover, errorBuilder: (_, __, ___) => _leadingIcon(registered)),
+              )
+            : _leadingIcon(registered),
         title: Text(h['name'] ?? '', style: const TextStyle(fontWeight: FontWeight.w600)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,4 +164,9 @@ class _HospitalSelectionScreenState extends State<HospitalSelectionScreen> {
       ),
     );
   }
+
+  Widget _leadingIcon(bool registered) => CircleAvatar(
+    backgroundColor: registered ? Colors.indigo.shade50 : Colors.grey.shade100,
+    child: Icon(Icons.local_hospital, color: registered ? Colors.indigo : Colors.grey),
+  );
 }

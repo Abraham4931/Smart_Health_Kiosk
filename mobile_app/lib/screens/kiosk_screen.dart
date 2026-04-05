@@ -53,7 +53,9 @@ class _KioskScreenState extends State<KioskScreen> {
                       children: [
                         Icon(connected ? Icons.wifi : Icons.wifi_off, color: connected ? Colors.green : Colors.grey),
                         const SizedBox(width: 12),
-                        Text(_status, style: const TextStyle(fontWeight: FontWeight.w500)),
+                        Expanded(
+                          child: Text(_status, style: const TextStyle(fontWeight: FontWeight.w500), overflow: TextOverflow.ellipsis, maxLines: 2),
+                        ),
                       ],
                     ),
                     if (!connected) ...[
@@ -67,6 +69,13 @@ class _KioskScreenState extends State<KioskScreen> {
                         child: FilledButton(
                           onPressed: _connecting ? null : _connect,
                           child: _connecting ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : const Text('Connect to Kiosk'),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Center(
+                        child: TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('Skip — use app without kiosk'),
                         ),
                       ),
                     ],

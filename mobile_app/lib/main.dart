@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'services/auth_service.dart';
@@ -8,10 +9,50 @@ import 'hive_init.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initHive();
-  await Hive.openBox('measurements');
-  await Hive.openBox('settings');
-  runApp(const SmartHealthKioskApp());
+  ErrorWidget.builder = (FlutterErrorDetails details) => Material(
+    child: Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.error_outline, size: 48, color: Colors.red),
+            const SizedBox(height: 16),
+            Text(details.exceptionAsString(), textAlign: TextAlign.center),
+          ],
+        ),
+      ),
+    ),
+  );
+  try {
+    if (!kIsWeb) {
+      await initHive();
+      await Hive.openBox('measurements');
+      await Hive.openBox('settings');
+    }
+    runApp(const SmartHealthKioskApp());
+  } catch (e, stack) {
+    debugPrint('Startup error: $e\n$stack');
+    runApp(MaterialApp(
+      home: Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Something went wrong', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 16),
+                Text('$e', style: const TextStyle(color: Colors.red)),
+                const SizedBox(height: 16),
+                Expanded(child: SingleChildScrollView(child: Text('$stack', style: const TextStyle(fontSize: 12)))),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ));
+  }
 }
 
 class SmartHealthKioskApp extends StatelessWidget {
