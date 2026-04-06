@@ -23,7 +23,7 @@ Install the tools below so you can run the backend, both web dashboards, and the
 
 **Option A – MongoDB Atlas (cloud, no local install)**  
 - Go to https://www.mongodb.com/cloud/atlas  
-- Create a free cluster and get a connection string (e.g. `mongodb+srv://user:pass@cluster.mongodb.net/smart_health_kiosk`).  
+- Create a free cluster and get a connection string  
 - Use this as `MONGODB_URI` in the backend `.env`.
 
 **Option B – MongoDB Community (local)**  
